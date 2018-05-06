@@ -1,0 +1,21 @@
+{
+  anew(int, in, int(), int());
+
+  boolean flag;
+  do {
+    flag = false;
+    for (i, in.length-2) {
+      if (in[i] > in[i+2]) {
+        swap(in[i], in[i+2]);
+        flag = true;
+      }
+    }
+  } while (flag);
+
+  for (i, in.length-1) {
+    if (in[i] > in[i+1]) {
+      return i;
+    }
+  }
+  return "OK";
+}

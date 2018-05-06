@@ -1,0 +1,98 @@
+#define x(i) number_bases.GetDigitX(i)
+#define y(i) number_bases.GetDigitY(i)
+#define z(i) number_bases.GetDigitZ(i)
+
+mtuple Res(long base, boolean carry);
+
+long len = number_bases.GetLength();
+
+Res BAD = new Res(0, false);
+
+Res reduce(Res[] noCarries, Res[] carries, boolean carryIn) {
+  anew(Res, path, carries.length, (i == 0 ? carryIn : path[i-1].carry) ? carries[i] : noCarries[i]);
+  long base = -2;
+  for (Res r : path) {
+    long tmpBase = r.base;
+    if (tmpBase == 0) {
+      return BAD;
+    } else if (tmpBase < 0 && base < 0) {
+      base = Math.min(base, tmpBase);
+    } else if (tmpBase < 0 && base > 0) {
+      if (base < -tmpBase) { return BAD; }
+    } else if (tmpBase > 0 && base < 0) {
+      if (tmpBase < -base) { return BAD; }
+      base = tmpBase;
+    } else if (tmpBase > 0 && base > 0) {
+      if (tmpBase != base) { return BAD; }
+    }
+  }
+  return new Res(base, path[path.length-1].carry);
+}
+
+Res allowedBase(long x, long y, boolean carry, long z) {
+  long sum = x + y + (carry ? 1 : 0), base = sum-z;
+  if (sum == z) {
+    return new Res(-(z+1), false);
+  }
+  if (base <= x || base <= y || base <= z) {
+   return BAD;
+  }
+  return new Res(base, true);
+}
+
+slave(long lo, long hi) {
+  int range = (int)(hi-lo);
+  Res[] carries = new Res[range], noCarries = new Res[range];
+  for (i, range) {
+    long x = x(lo+i), y = y(lo+i), z = z(lo+i);
+    carries[i] = allowedBase(x, y, true, z);
+    noCarries[i] = allowedBase(x, y, false, z);
+  }
+  masterNode.put(reduce(noCarries,carries,false)).putln(reduce(noCarries,carries,true));
+}
+
+  //long finalBase(Res[] path) {
+  //  
+  //}
+  //
+  //master_dist() {
+  //  anew(Res, noCarries, activeNodes, Res.getln(nodes[i]));
+  //  anew(Res, carries, activeNodes, Res.get(nodes[i]));
+  //  anew(Res, path, activeNodes, i == 0 ? noCarries[i] : path[i-1].carry ? carries[i] : noCarries[i]);
+  //  long base = -2;
+  //  for (Res r : path) {
+  //    tmpBase = r.base
+  //    debug(xs[i],ys[i],carry,zs[i],tmpBase);
+  //    if (tmpBase == 0) {
+  //      return BAD;
+  //    } else if (tmpBase < 0 && base < 0) {
+  //      MIN(base, tmpBase);
+  //    } else if (tmpBase < 0 && base > 0) {
+  //      if (base < -tmpBase) { return BAD; }
+  //    } else if (tmpBase > 0 && base < 0) {
+  //      if (tmpBase < -base) { return BAD; }
+  //      base = tmpBase;
+  //    } else if (tmpBase > 0 && base > 0) {
+  //      if (tmpBase != base) { return BAD; }
+  //    }
+  //    carry = tmpBase > 0;
+  //  }
+  //}
+
+master() {
+  anew(Res, noCarries, activeNodes, Res.getln(nodes[i]));
+  anew(Res, carries, activeNodes, Res.get(nodes[i]));
+  Res a = reduce(noCarries, carries, false);
+  if (a.base == 0 || a.carry) {
+    println("IMPOSSIBLE");
+  } else if (a.base < 0) {
+    println("NON-UNIQUE");
+  } else if (a.base > 0) {
+    println(a.base);
+  }
+}
+
+{
+  LINSPACE(len);
+  MASTER();
+}

@@ -1,0 +1,42 @@
+int intPart(int n, int d) {
+  return (int)(n*100.0/d);
+}
+
+boolean isUp(int n, int d) {
+  return (n*100./d)%1 >= 0.5;
+}
+
+{
+  int(n,l);
+  int[] in(l, int());
+  boolean[] isUp(n+1, isUp(i,n));
+
+  int[] tillUp(n+1);
+  tillUp[tillUp.length-1] = Integer.MAX_VALUE;
+  for (int i = tillUp.length-2; i >= 0; i--) {
+    if (!isUp(i,n)) {
+      tillUp[i] = tillUp[i+1] + (tillUp[i+1] == Integer.MAX_VALUE ? 0 : 1);
+    }
+    if (tillUp[i] < Integer.MAX_VALUE && !isUp(i+tillUp[i],n)) {
+      throw new RuntimeException();
+    }
+  }
+
+  int out = 0, used = 0;
+  PriorityQueue<Integer> q();
+  for (int i : in) {
+    out += intPart(i,n);
+    q.add(tillUp[i]);
+    used += i;
+  }
+  int toSpare = n-used;
+  for (i, toSpare) {
+    out += intPart(1,n);
+    q.add(tillUp[0]);
+  }
+  while (!q.isEmpty() && toSpare >= q.peek()) {
+    toSpare -= q.poll();
+    out++;
+  }
+  return out;
+}

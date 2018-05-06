@@ -1,0 +1,24 @@
+long PRIME = 1000000007L;
+#define BI BigInteger
+
+BI TEN = new BI("10");
+BI PRIME_BI = new BI(PRIME+"");
+long tenModPow(long p) {
+  return TEN.modPow(new BI(p+""),PRIME_BI).longValue();
+}
+
+new(HashMap<Long><Long>, memo)();
+long onesMod(long n) {
+  if (memo.containsKey(n)) { return memo.get(n); }
+  if (n == 0) { return 0; }
+  if (n == 1) { return 1; }
+  long tmp = onesMod(n/2), tmp2 = onesMod((n+1)/2);
+  long out = (tmp + (tmp2*tenModPow(n/2))%PRIME)%PRIME;
+  memo.put(n, out);
+  return out;
+}
+
+
+{
+  debug(onesMod(1000000000));
+}

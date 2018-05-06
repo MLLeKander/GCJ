@@ -1,0 +1,6 @@
+{
+  int(n,p);
+  anew(int, groups, n, int());
+  debug(ats(groups));
+  return -1;
+}

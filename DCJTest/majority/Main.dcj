@@ -1,0 +1,77 @@
+#define getVote(i) majority.GetVote(i)
+
+long[] votes = new long[0];
+long[] majs = new long[0];
+
+long majority(long[] arr) {
+  long tmp = Long.MIN_VALUE;
+  int cnt = 0;
+  for (long l : arr) {
+    if (cnt == 0) {
+      tmp = l;
+    }
+    if (l == tmp) {
+      cnt++;
+    } else {
+      cnt--;
+    }
+  }
+
+  cnt = 0;
+  for (long l : arr) {
+    if (l == tmp) {
+      cnt++;
+    }
+  }
+  return cnt+cnt > arr.length ? tmp : -1;
+}
+
+void slave(long lo, long hi) {
+  int diff = (int)(hi-lo);
+  votes = new long[diff];
+  for (i, diff) {
+    votes[i] = getVote(lo+i);
+  }
+  masterNode.putln(majority(votes));
+}
+
+void master() {
+  majs = new long[nodes.length];
+  for (i, majs.length) { majs[i] = nodes[i].getlnLong(); }
+  for (Node n : nodes) {
+    n.putln(majs);
+  }
+}
+
+void slave() {
+  long[] majs = masterNode.getlnLongA();
+  int[] counts = new int[majs.length];
+  for (long l : votes) {
+    for (i, nodes.length) {
+      if (majs[i] == l) {
+        counts[i]++;
+        break;
+      }
+    }
+  }
+  masterNode.putln(counts);
+}
+
+void master2() {
+  int[] counts = new int[nodes.length];
+  for (Node n : nodes) {
+    int[] tmpCounts = n.getlnIntA();
+    for (i, counts.length) {
+      counts[i] += tmpCounts[i];
+    }
+  }
+  maxndx(int, counts);
+  println(max+max > majority.GetN() ? majs[maxNdx] : "NO WINNER");
+}
+
+{
+  LINSPACE(majority.GetN());
+  MASTER();
+  SLAVE();
+  MASTER(master2);
+}

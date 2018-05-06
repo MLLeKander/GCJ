@@ -1,0 +1,12 @@
+tuple Sign(int d, int a, int b) {
+  int m() { return d+a; }
+  int n() { return d-b; }
+}
+{
+  Sign[] signs(int(), ());
+  for (Sign sign : signs) {
+    eprintf("%- 3d  %- 3d\n", sign.m(), sign.n());
+  }
+  eprintln();
+  return "";
+}

@@ -1,0 +1,30 @@
+void addPut(Map<Long><Long> map, Long k, Long v) {
+  if (map.containsKey(k)) {
+    v += map.get(k);
+  }
+  map.put(k,v);
+}
+
+{
+  long(n,m);
+  new(TreeMap<Long><Long>,map)();
+  map.put(n,1L);
+  long curr = 0;
+  while (!map.isEmpty()) {
+    Map.Entry<Long><Long> e = map.pollLastEntry();
+    long k = e.getKey(), v = e.getValue();
+    if (k == 0) {
+      continue;
+    }
+    curr += v;
+    long mn = (k-1)/2, mx = k/2;
+
+    if (curr >= m) {
+      return mx+" "+mn;
+    }
+
+    addPut(map, mx, v);
+    addPut(map, mn, v);
+  }
+  throw new RuntimeException();
+}

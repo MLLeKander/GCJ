@@ -1,0 +1,31 @@
+#define getA(i) again.GetA(i)
+#define getB(i) again.GetB(i)
+#define modAdd(res, i) res = (res + i)%LARGE_PRIME
+
+long LARGE_PRIME = 1000000007L;
+long n = again.GetN();
+
+void slave() {
+  long sumA = 0, sumB = 0;
+  for (long i = nodeId; i < n; i+= nodes.length) {
+    modAdd(sumA,getA(i));
+    modAdd(sumB,getB(i));
+  }
+  masterNode.put(sumA);
+  masterNode.putln(sumB);
+}
+
+void master() {
+  anew(long, as, nodes.length, nodes[i].getlnLong());
+  anew(long, bs, nodes.length, nodes[i].getLong());
+  debug(ats(as), ats(bs));
+  long result = 0;
+  for (i, nodes.length) {
+    for (j, nodes.length) {
+      if ((i+j)%20 != 0) {
+        modAdd(result, as[i]*bs[j]);
+      }
+    }
+  }
+  println(result);
+}

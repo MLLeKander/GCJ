@@ -1,0 +1,33 @@
+String solve(HashSet<String> ss, ArrayList<HashSet<Character>> sets, char[] arr, int depth) {
+  if (depth == sets.size()) {
+    String out = new String(arr);
+    return ss.contains(out) ? null : out;
+  }
+  for (char c : sets.get(depth)) {
+    arr[depth] = c;
+    String tmp = solve(ss, sets, arr, depth+1);
+    if (tmp != null) { return tmp; }
+  }
+  return null;
+}
+
+String solve(HashSet<String> ss, ArrayList<HashSet<Character>> sets) {
+  return solve(ss, sets, new char[sets.size()], 0);
+}
+
+{
+  int(n,l);
+  String[] ss(n, next());
+
+  ArrayList<HashSet<Character>> sets();
+  for (i, l) {
+    sets.add(new HashSet<Character>());
+  }
+  for (String s : ss) {
+    for (i, l) {
+      sets.get(i).add(s.charAt(i));
+    }
+  }
+  String out = solve(new HashSet<String>(Arrays.asList(ss)), sets);
+  return out == null ? '-' : out;
+}

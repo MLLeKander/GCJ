@@ -1,0 +1,51 @@
+tuple LongWrapper(long i);
+
+class MyMap extends TreeMap<Long, LongWrapper> {
+  .void add(Long key, long newVal) {
+    LongWrapper val = get(key);
+    if (val == null) {
+      put(key, new LongWrapper(newVal));
+    } else {
+      val.i += newVal;
+    }
+  }
+}
+
+{
+  long(n,k);
+  new(MyMap, map)();
+
+  map.add(n, 1);
+  long count = 0;
+  while (count < k && map.size() > 0) {
+    //debug(map, map.lastEntry(), count);
+    long tmp = map.lastKey(), num = map.remove(tmp).i;
+    count += num;
+    //debug(count, k);
+    if (count >= k) {
+      return max2(tmp)+" "+min2(tmp);
+    }
+    map.add(max2(tmp), num);
+    map.add(min2(tmp), num);
+  }
+  eprintln("This shouldn't happen...");
+  return "0 0";
+}
+
+//{
+//  int(n,k);
+//  new(PriorityQueue<Integer>, q)(10, Collections.reverseOrder());
+//  q.offer(n);
+//  for (i, 1, k) {
+//    debug(q);
+//    int tmp = q.poll();
+//    q.offer(max2(tmp));
+//    q.offer(min2(tmp));
+//  }
+//  debug(q);
+//  int tmp = q.poll();
+//  return max2(tmp)+" "+min2(tmp);
+//}
+
+long max2(long tmp) { return tmp/2; }
+long min2(long tmp) { return (tmp-1)/2; }

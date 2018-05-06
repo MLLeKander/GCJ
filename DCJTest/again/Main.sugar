@@ -1,0 +1,13 @@
+{
+  int[][] foo = new int[11][11];
+  for (i, 11) {
+    for (j, 11) {
+      if ((i+j)%5 == 0) {
+        foo[i][j] = 1;
+      }
+    }
+  }
+  for (int[] row : foo) {
+    debug(ats(row));
+  }
+}

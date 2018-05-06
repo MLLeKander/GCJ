@@ -1,0 +1,6 @@
+Solution.java:35: error: cannot find symbol
+    for (int i = 0; i < toSpare; i++) {
+                        ^
+  symbol:   variable toSpare
+  location: class Solution
+1 error

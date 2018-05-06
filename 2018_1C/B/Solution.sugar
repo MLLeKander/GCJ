@@ -1,0 +1,31 @@
+{
+  int(t);
+  while (t-- > 0) {
+    solve();
+  }
+}
+
+void solve() {
+  int(n);
+  int[] counts(n);
+  for (_i, n) {
+    int(d);
+    int[] prefs(d, int());
+    int out = -1, min = Integer.MAX_VALUE;
+    for (int p : prefs) {
+      if (counts[p] < min) {
+        out = p;
+        min = counts[p];
+      }
+      if (counts[p] != Integer.MAX_VALUE) {
+        counts[p]++;
+      }
+    }
+    if (out >= 0) {
+      counts[out] = Integer.MAX_VALUE;
+    }
+
+    println(out);
+    flush();
+  }
+}

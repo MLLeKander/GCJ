@@ -1,0 +1,81 @@
+long N = lisp_plus_plus.GetLength();
+char[] cs = new char[0];
+
+slave(long lo, long hi) {
+  cs = new char[(int)(hi-lo)];
+  for (i, cs.length) {
+    cs[i] = lisp_plus_plus.GetCharacter(i+lo);
+  }
+  String s = new String(cs);
+  //debug(s);
+  long openCount = 0, closeCount = 0;
+  for (char c : cs) {
+    if (c == '(') {
+      openCount++;
+    } else {
+      if (openCount == 0) {
+        closeCount++;
+      } else {
+        openCount--;
+      }
+    }
+  }
+  masterNode.put(closeCount).putln(openCount);
+}
+master() {
+  long[] ranges = linspace(N, nodes.length);
+  anew(long,closes,activeNodes,nodes[i].getlnLong());
+  anew(long,opens,activeNodes,nodes[i].getLong());
+
+  //debug(ats(closes));
+  //debug(ats(opens));
+  long openCount = 0;
+  int mark = -1;
+  for (i, activeNodes) {
+    openCount -= closes[i];
+    if (openCount < 0) {
+      mark = i;
+      openCount += closes[i];
+      break;
+    }
+    openCount += opens[i];
+  }
+  //debug(mark, openCount);
+  if (mark == -1) {
+    println(openCount == 0 ? -1L : N);
+  }
+  for (i, nodes.length) {
+    if (i == mark) {
+      nodes[i].put(openCount).putln(i == 0 ? 0L : ranges[i-1]);
+    } else {
+      nodes[i].putln(-1L);
+    }
+  }
+}
+
+slave2() {
+  long open = masterNode.getlnLong();
+  if (open == -1) {
+    return;
+  }
+  long prefix = masterNode.getLong();
+  //debug(open, prefix);
+  for (int i = 0; i < cs.length; i++) {
+    if (cs[i] == '(') {
+      open++;
+    } else {
+      if (open > 0) {
+        open--;
+      } else {
+        println(prefix+i);
+        return;
+      }
+    }
+  }
+}
+
+{
+  LINSPACE(N);
+  MASTER();
+  SLAVE(slave2);
+}

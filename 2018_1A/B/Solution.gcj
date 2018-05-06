@@ -1,0 +1,31 @@
+tuple Cashier(long max, long s, long p) {
+  long bitsAt(long t) { return Math.max(0, Math.min(max, (t-p)/s)); }
+  long maxT() { return s*max + p; }
+}
+
+boolean canFit(Cashier[] cs, int r, long b, long t) {
+  anew(long, bts, cs.length, cs[i].bitsAt(t));
+  Arrays.sort(bts);
+  long sum = 0;
+  for (int c = 0, i = bts.length-1; c < r && i >= 0; i--, c++) {
+    sum += bts[i];
+  }
+  return sum >= b;
+}
+
+{
+  int(r);
+  long(b);
+  int(c);
+  anew(Cashier, cs, c, new Cashier());
+  long lo = 0, hi = Long.MAX_VALUE;
+  while (lo < hi) {
+    long mid = lo + (hi-lo)/2;
+    if (canFit(cs, r, b, mid)) {
+      hi = mid;
+    } else {
+      lo = mid+1;
+    }
+  }
+  return hi;
+}

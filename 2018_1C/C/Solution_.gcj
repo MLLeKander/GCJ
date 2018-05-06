@@ -1,0 +1,24 @@
+{
+  int(n);
+  long[] ws(n, long());
+
+  ArrayList<Long> dp();
+  dp.add(0L);
+
+  for (long w : ws) {
+    long prevEnd = dp.get(dp.size()-1);
+
+    for (int o = dp.size()-1; o > 0; o--) {
+      long tmp = w + dp.get(o-1);
+      if (6*w >= dp.get(o-1) && tmp < dp.get(o)) {
+        dp.set(o, tmp);
+      }
+    }
+
+    if (w*6 >= prevEnd) {
+      dp.add(w + prevEnd);
+    }
+  }
+
+  return dp.size()-1;
+}

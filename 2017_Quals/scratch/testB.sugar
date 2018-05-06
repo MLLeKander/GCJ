@@ -1,0 +1,50 @@
+{
+  long(min);
+  long(max);
+  long maxVal = 1;
+  for (i, 1, max+1) {
+    if (isIncreasing(i)) {
+      maxVal = i;
+    }
+    if (i >= min) {
+      Object tmp = solveTmp(i);
+      if (!(tmp+"").equals(maxVal+"")) {
+        debug(i, tmp, maxVal);
+        return;
+      }
+    }
+  }
+}
+
+boolean isIncreasing(long i) {
+  while (i >= 10) {
+    if (i%10 < (i /= 10)%10) {
+      return false;
+    }
+  }
+  return true;
+}
+
+Object solveTmp(Object in) {
+  char[] s = in.toString().toCharArray();
+  int ndx = -1;
+  for (i, 0, s.length-1 && ndx == -1) {
+    if (s[i+1] < s[i]) {
+      ndx = i;
+    }
+  }
+  if (ndx != -1) {
+    char tmp = s[ndx];
+    while (ndx > 0 && s[ndx-1] == tmp) {
+      ndx--;
+    }
+
+    s[ndx]--;
+    for (i, ndx+1, s.length) {
+      s[i] = '9';
+    }
+  }
+
+  String out = new String(s);
+  return out.charAt(0) == '0' ? out.substring(1) : out;
+}

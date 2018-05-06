@@ -1,0 +1,47 @@
+long oLen = todd_and_steven.GetToddLength();
+long eLen = todd_and_steven.GetStevenLength();
+long PRIME = 1000000007l;
+//boolean useE = eLen > oLen;
+//long aLen = useE ? eLen : oLen;
+//long bLen = useE ? oLen : eLen;
+#define getO(i) todd_and_steven.GetToddValue(i)
+#define getE(i) todd_and_steven.GetStevenValue(i)
+//#define getA(i) (useE ? getE(i) : getO(i))
+//#define getB(i) (useE ? getO(i) : getE(i))
+
+
+
+#define UPDATE(i) out = (out + (i ^ ndx))%PRIME
+master() {
+  long oNdx = 0, eNdx = 0, out = 0, ndx = 0;
+  long oVal = getO(0), eVal = getE(0);
+  for ( ; true; ndx++) {
+    if (oVal < eVal) {
+      //debug(ndx, oVal ^ ndx);
+      UPDATE(oVal);
+      if (++oNdx == oLen) { break; }
+      oVal = getO(oNdx);
+    } else {
+      //debug(ndx, eVal ^ ndx);
+      UPDATE(eVal);
+      if (++eNdx == eLen) { break; }
+      eVal = getE(eNdx);
+    }
+  }
+  ndx++;
+  for ( ; oNdx < oLen; oNdx++, ndx++) {
+    //debug(ndx, getO(oNdx) ^ ndx);
+    UPDATE(getO(oNdx));
+  }
+  for ( ; eNdx < eLen; eNdx++, ndx++) {
+    //debug(ndx, getE(eNdx) ^ ndx);
+    UPDATE(getE(eNdx));
+  }
+
+  println(out);
+}
+
+{
+  //LINSPACE(aLen);
+  MASTER();
+}

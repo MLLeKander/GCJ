@@ -1,0 +1,171 @@
+new(ArrayList<Beam>, beams)();
+char[][] board;
+//int[][] beamCount;
+Beam[][] udCover, lrCover;
+int rows = -1, cols = -1;
+//int emptyCount = -1, visitedCount = -1;
+//long startT = -1;
+
+interface Func { boolean call(int r, int c); }
+tuple Point(int r, int c);
+
+boolean propogate(Beam b, Func callback) {
+  return propogate(b.r, b.c, b.isUD, callback);
+}
+
+boolean propogate(int r, int c, boolean isUD, Func callback) {
+  return propogate(r, c, isUD ? 1 : 0, isUD ? 0 : 1, callback) &&
+         propogate(r, c, isUD ? -1 : 0, isUD ? 0 : -1, callback);
+}
+
+boolean propogate(int r, int c, int dr, int dc, Func callback) {
+  while (true) {
+    r += dr; c += dc;
+    if (r < 0 || c < 0 || r >= rows || c >= cols || board[r][c] == '#') {
+      break;
+    } else if (board[r][c] == '/') {
+      swap(dr,dc);
+      dr *= -1;
+      dc *= -1;
+    } else if (board[r][c] == '\\') {
+      swap(dr,dc);
+    } else {
+      if (callback.call(r, c)) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+boolean check(Beam beam, boolean isUD) {
+  Func callback = (r, c) -> {
+    if (isUD) {
+      udCover[r][c] = beam;
+    } else {
+      lrCover[r][c] = beam;
+    }
+    return board[r][c] == '-' || board[r][c] == '|';
+  };
+  return propogate(beam.r, beam.c, isUD, callback);
+}
+
+//void propogateCounts(Beam beam) {
+//  Func callback = (r, c) -> { if (beamCount[r][c]++ == 0) visitedCount++; return false; };
+//  propogate(beam, callback);
+//}
+//void unpropogateCounts(Beam beam) {
+//  Func callback = (r, c) -> { if (beamCount[r][c]-- == 1) visitedCount--; return false; };
+//  propogate(beam, callback);
+//}
+//
+//boolean dfs(int ndx) {
+//  if (ndx == rotatableBeams.size()) {
+//    //for (r, rows) {
+//    //  for (c, cols) {
+//    //    if (board[r][c] == '.' && beamCount[r][c] == 0) {
+//    //      return false;
+//    //    }
+//    //  }
+//    //}
+//    return visitedCount == emptyCount;
+//  } else if (System.currentTimeMillis() - startT > 5000) {
+//    return false;
+//  }
+//  {
+//    // Random swap for next index.
+//    int nextNdx = ThreadLocalRandom.current().nextInt(rotatableBeams.size()-ndx);
+//    Beam tmp = rotatableBeams.get(ndx);
+//    rotatableBeams.set(ndx,rotatableBeams.get(nextNdx));
+//    rotatableBeams.set(nextNdx, tmp);
+//  }
+//  Beam b = rotatableBeams.get(ndx);
+//  boolean r = Math.random() < 0.5;
+//  b.isUD = r;
+//  propogateCounts(b);
+//  if (dfs(ndx+1)) { return true; }
+//  unpropogateCounts(b);
+//
+//  b.isUD = !r;
+//  propogateCounts(b);
+//  if (dfs(ndx+1)) { return true; }
+//  unpropogateCounts(b);
+//  return false;
+//}
+
+void printBoard() {
+  for (Beam b : beams) {
+    board[b.r][b.c] = b.isUD ? '|' : '-';
+  }
+  for (char[] row : board) {
+    println(new String(row));
+  }
+}
+
+{
+  rows = int();
+  cols = int();
+  board = new char[rows][cols];
+  //beamCount = new int[rows][cols];
+  beams.clear();
+  //emptyCount = 0;
+  //visitedCount = 0;
+  udCover = new Beam[rows][cols];
+  lrCover = new Beam[rows][cols];
+
+  for (r, rows) {
+    line(s);
+    for (c, cols) {
+      board[r][c] = s.charAt(c);
+      if (board[r][c] == '|' || board[r][c] == '-') {
+        board[r][c] = '-';
+        beams.add(new Beam(r,c));
+      }
+    }
+  }
+  for (Beam b : beams) {
+    boolean canUD = check(b, true);
+    boolean canLR = check(b, false);
+    if (!canUD && !canLR) {
+      return "IMPOSSIBLE";
+    } else if (canUD ^ canLR)  {
+      b.locked = true;
+      b.isUD = canUD;
+    }
+  }
+  new(LinkedList<Point>, ambiguous)();
+  for (r, rows) {
+    for (c, cols) {
+      if (board[r][c] == '.') {
+        Beam ud = udCover[r][c], lr = lrCover[r][c];
+        if (ud == null && lr == null) { return "IMPOSSIBLE"; }
+        if (ud != null && ud.locked && ud.isUD || lr != null && lr.locked && !lr.isUD) {
+          continue;
+        }
+        if (ud == null || ud.locked) {
+          if (lr.isUD && lr.locked) { return "IMPOSSIBLE"; }
+          lr.isUD = false; lr.locked = true;
+        } else if (lr == null || lr.locked) {
+          if (!ud.isUD && ud.locked) { return "IMPOSSIBLE"; }
+          ud.isUD = true; ud.locked = true;
+        } else {
+          ambiguous.add(new Point(r,c));
+        }
+      }
+    }
+  }
+  debug(ambiguous.size());
+  //for (Beam b : stationaryBeams) {
+  //  propogateCounts(b);
+  //}
+  //if (!dfs(0)) { return "IMPOSSIBLE"; }
+  
+  println("POSSIBLE");
+  printBoard();
+  return null;
+}
+
+tuple Beam(int r, int c) {
+  boolean isUD = false;
+  boolean locked = false;
+}

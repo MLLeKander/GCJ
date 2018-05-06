@@ -1,0 +1,63 @@
+ctuple Activity(int start, int end, char type) {
+  int time() { return (end-start+720)%720; }
+}
+
+int reduce(char type, ArrayList<Activity> acts, int time) {
+  int out = 0;
+  while (true) {
+    int minDiff = Integer.MAX_VALUE, minNdx = -1;;
+    for (i, acts.size()) {
+      Activity a = acts.get(i), b = acts.get(i+1 == acts.size() ? 0 : i+1);
+      if (a.type == type && b.type == type) {
+        int diff = b.start - a.end;
+        if (diff < 0) { diff += 1440; }
+        if (diff < minDiff) {
+          minDiff = diff;
+          minNdx = i;
+        }
+      }
+    }
+    if (minDiff <= time) {
+      Activity a = acts.get(minNdx), b = acts.get(minNdx+1 == acts.size() ? 0 : minNdx+1);
+      time -= minDiff;
+      out++;
+      acts.remove(a);
+      acts.remove(b);
+      acts.add(minNdx > acts.size() ? 0 : minNdx, new Activity(a.start, b.end, type));
+      continue;
+    }
+    break;
+  }
+  return out;
+}
+
+{
+  int(ac, aj);
+  int n = ac+aj;
+
+  int cTime = 720, jTime = 720;
+  new(ArrayList<Activity>, acts)(n);
+  for (i, ac) {
+    acts.add(new Activity(int(), int(), 'c'));
+    cTime -= acts.get(i).time();
+  }
+  for (i, ac, n) {
+    acts.add(new Activity(int(), int(), 'j'));
+    jTime -= acts.get(i).time();
+  }
+  if (ac <= 1 && aj <= 1) { return 2; }
+
+  Collections.sort(acts);
+  int minStart = acts.get(0).start;
+
+  for (Activity a : acts) {
+    a.start -= minStart;
+    a.end -= minStart;
+    if (a.end < 0) {
+      a.end += 1440;
+    }
+  }
+  ac -= reduce('c', acts, cTime);
+  aj -= reduce('j', acts, jTime);
+  return Math.max(ac,aj)*2;
+}

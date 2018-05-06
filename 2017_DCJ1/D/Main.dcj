@@ -1,0 +1,90 @@
+long hi = query_of_death.GetLength(), lo = 0;
+long runningSum = 0;
+#define val(i) query_of_death.GetValue(i)
+
+slave(long lo, long hi) {
+  int range = (int)(hi-lo);
+  long sum = 0;
+  if (range == 1) {
+    sum = val(lo);
+  } else if (range > 1) {
+    for (i, range) {
+      long tmp = val(i+lo);
+      if (tmp != val(i+lo) || tmp != val(i+lo) || tmp != val(i+lo)) {
+        sum = -1;
+        break;
+      }
+      sum += tmp;
+    }
+  }
+  //debug(lo, hi, sum);
+  masterNode.putln(sum);
+}
+
+void deleteNode(int i) {
+  Node[] tmp = new Node[nodes.length-1];
+  for (int newNdx = 0, oldNdx = 0; newNdx < tmp.length; oldNdx++) {
+    if (oldNdx != i) {
+      tmp[newNdx++] = nodes[oldNdx];
+    }
+  }
+  nodes = tmp;
+}
+
+boolean master() {
+  int badNdx = -1;
+  anew(long, resps, nodes.length, nodes[i].getlnLong());
+  //debug(ats(resps));
+  //debug(runningSum);
+  for (i, nodes.length) {
+    long tmp = resps[i];
+    if (tmp == -1) {
+      badNdx = i;
+      continue;
+    }
+    runningSum += tmp;
+  }
+  //debug(runningSum);
+  for (Node n : nodes) {
+    n.putln(badNdx);
+  }
+  if (badNdx == -1) {
+    println(runningSum);
+    return true;
+  }
+
+  deleteNode(badNdx);
+  return false;
+}
+
+{
+  deleteNode(0);
+  nodeId--;
+
+  while (true) {
+    if (nodeId >= 0) {
+      long[] ranges = linspace(lo, hi, nodes.length);
+      //if (nodeId == 0) debug(lo, hi, nodes.length, ats(ranges));
+      if (nodeId+1 < ranges.length) {
+        slave(ranges[nodeId], ranges[nodeId+1]);
+      } else {
+        masterNode.putln(0l);
+      }
+      int badNode = masterNode.getlnInt();
+      if (badNode == -1 || badNode == nodeId) {
+        return;
+      } else if (badNode < nodeId) {
+        nodeId--;
+      }
+      deleteNode(badNode);
+
+      lo = ranges[badNode];
+      hi = ranges[badNode+1];
+
+    } else {
+      if (master()) {
+        return;
+      }
+    }
+  }
+}

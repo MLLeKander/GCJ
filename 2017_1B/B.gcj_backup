@@ -1,0 +1,85 @@
+boolean az(int... in) {
+  for (int i : in) {
+    if (i != 0) {
+      return false;
+    }
+  }
+  return true;
+}
+
+
+
+// O => B
+// G => R
+// V => Y
+{
+  int(n, r, o, y, g, b, v);
+  new(StringBuilder, out)();
+
+  if (az(g,r,v,y)) { // O
+    if (o > b) { return "IMPOSSIBLE"; }
+    for (; o > 0; o--, b--) {
+      out.append("OB");
+    }
+    for (; b > 0; b--) {
+      out.append('B');
+    }
+    return out;
+  } else if (az(o,b,v,y)) { // G
+    if (g > r) { return "IMPOSSIBLE"; }
+    for (; g > 0; g--, r--) {
+      out.append("GR");
+    }
+    for (; r > 0; r--) {
+      out.append('R');
+    }
+    return out;
+  } else if (az(o,b,g,r)) { // V
+    if (v > y) { return "IMPOSSIBLE"; }
+    for (; v > 0; v--, y--) {
+      out.append("VY");
+    }
+    for (; y > 0; y--) {
+      out.append('Y');
+    }
+    return out;
+  }
+
+  if (g > 0 && r < g+1 || v > 0 && y < v+1 || o > 0 && b < o+1) {
+    return "IMPOSSIBLE";
+  }
+  if (g > 0) {
+    r--;
+    out.append('R');
+    for (; g > 0; g--, r--) {
+      out.append('G');
+      out.append('R');
+    }
+  }
+  if (v > 0) {
+    y--;
+    out.append('Y');
+    for (; v > 0; v--, y--) {
+      out.append('V');
+      out.append('Y');
+    }
+  }
+  if (o > 0) {
+    b--;
+    out.append('B');
+    for (; o > 0; o--, b--) {
+      out.append('O');
+      out.append('B');
+    }
+  }
+  for (; r > 0; r--) {
+    out.append('R');
+  }
+  for (; y > 0; y--) {
+    out.append('Y');
+  }
+  for (; b > 0; b--) {
+    out.append('B');
+  }
+  return out;
+}

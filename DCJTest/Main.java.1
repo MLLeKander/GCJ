@@ -1,0 +1,198 @@
+import java.util.*;
+import java.io.*;
+import java.lang.reflect.*;
+
+abstract class MasterArch<M2W, W2M> {
+   public abstract Collection<M2W> jobs();
+   public abstract void respondTo(int workerId, W2M msg);
+   public abstract void finish();
+   public abstract W2M worker(M2W job);
+
+   Class<M2W> m2wClass;
+   Class<W2M> w2mClass;
+
+   public MasterArch(Class<M2W> m2w_, Class<W2M> w2m_) { m2wClass=m2w_; w2mClass=w2m_; }
+
+   private static Field[] orderedFields(Class<?> c) {
+      Field[] f = c.getFields();
+      Arrays.sort(f, new Comparator<Field>() {
+         @Override
+         public int compare(Field a, Field b) {
+            return a.getName().compareTo(b.getName());
+         }
+      });
+      return f;
+   }
+
+   public static void writeObj(int to, Object obj) {
+      try {
+         for (Field f : orderedFields(obj.getClass())) {
+            Class type = f.getType();
+            if (type == char.class) {
+               message.PutChar(to, f.getChar(obj));
+            } else if (type == int.class) {
+               message.PutInt(to, f.getInt(obj));
+            } else if (type == long.class) {
+               message.PutLL(to, f.getLong(obj));
+            }
+         }
+      } catch (Exception e) {
+         throw new RuntimeException(e);
+      }
+   }
+
+   public static <T> T readObj(int from, Class<T> c) {
+      try {
+         T out = c.newInstance();
+         for (Field f : orderedFields(c)) {
+            Class type = f.getType();
+            if (type == char.class) {
+               f.setChar(out, message.GetChar(from));
+            } else if (type == int.class) {
+               f.setInt(out, message.GetInt(from));
+            } else if (type == long.class) {
+               f.setLong(out, message.GetLL(from));
+            }
+            System.out.println("readObj:"+f.getName()+" "+f.getType());
+         }
+         return out;
+      } catch (Exception e) {
+         throw new RuntimeException(e);
+      }
+   }
+
+   public static int[] partitionSizes(int rangeLength, int partitions) {
+      int[] out = new int[partitions];
+      int midPoint = (rangeLength) % partitions;
+      Arrays.fill(out,0,midPoint,(rangeLength)/partitions + 1);
+      Arrays.fill(out,midPoint,partitions,(rangeLength)/partitions);
+      return out;
+   }
+
+   public void assignJobFromQueue(Collection<M2W> queue, int workerId) {
+      if (queue.size() > 0) {
+         M2W job = queue.iterator().next();
+         queue.remove(job);
+
+         message.PutChar(workerId, 'c');
+         writeObj(workerId, job);
+      } else {
+         message.PutChar(workerId, 's');
+      }
+
+      message.Send(workerId);
+   }
+
+   public void run() {
+      if (message.MyNodeId() == 0) {
+         runMaster();
+      } else {
+         runWorker();
+      }
+   }
+
+   public void runMaster() {
+      Collection<M2W> jobQueue = jobs();
+      int jobsToComplete = jobQueue.size();
+
+      for (int node = 1; node < message.NumberOfNodes(); node++) {
+         assignJobFromQueue(jobQueue, node);
+      }
+
+      for ( ; jobsToComplete > 0; jobsToComplete--) {
+         int node = message.Receive(-1);
+         W2M resp = readObj(node, w2mClass);
+         respondTo(node, resp);
+         assignJobFromQueue(jobQueue, node);
+      }
+
+      finish();
+   }
+
+   public void runWorker() {
+      message.Receive(0);
+      while (message.GetChar(0) == 'c') {
+         M2W msg = readObj(0, m2wClass);
+         W2M resp = worker(msg);
+         writeObj(0, resp);
+         message.Send(0);
+         message.Receive(0);
+      }
+   }
+}
+
+class Range {
+   public long start = 0, end = 0;
+   public Range() {}
+   public Range(long s, long e) { start=s; end=e; }
+}
+
+class LL {
+   public long l = 0;
+   public LL() {}
+   public LL(long l_) { l=l_; }
+}
+
+class Int {
+   public long i = 0;
+   public Int() {}
+   public Int(int i_) { i=i_; }
+}
+
+class Char {
+   public char c = 0;
+   public Char() {}
+   public Char(char c_) { c=c_; }
+}
+
+public class Main extends MasterArch<Range, LL> {
+   public Main() { super(Range.class, LL.class); }
+   public static void main(String[] args) { new Main().run(); }
+
+   public static final int NUM_PARTS = (int)(message.NumberOfNodes()-1);
+   public static final int MOD = 1048576;
+
+   // MASTER NODE LOGIC
+   public static int[] parts = new int[NUM_PARTS];
+   static {
+      int[] partSizes = partitionSizes(500, NUM_PARTS);
+
+      int curr = 0;
+      for (int i = 0; i < partSizes.length; i++) {
+         curr += partSizes[i];
+         parts[i] = curr;
+      }
+   }
+
+   public Collection<Range> jobs() {
+      HashSet<Range> out = new HashSet<Range>(parts.length);
+      long prev = 0, curr = 0;
+      for (int i = 0; i < parts.length; i++) {
+         curr = parts[i];
+         out.add(new Range(prev,curr));
+         prev = curr;
+      }
+      return out;
+   }
+
+   public long hash = 0;
+   public void respondTo(int workerId, LL l) {
+      System.out.println(workerId+" "+l.l);
+      hash += l.l;
+   }
+
+   public void finish() {
+      System.out.println(hash);
+   }
+
+
+   // WORKER NODE LOGIC
+   public LL worker(Range r) {
+      System.out.println("["+r.start+" "+r.end+"]");
+      long hash = 0;
+      for (long i = r.start; i < r.end; i++) {
+         hash += i;
+      }
+      return new LL(hash);
+   }
+}

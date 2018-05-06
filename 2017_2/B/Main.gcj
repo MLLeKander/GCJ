@@ -1,0 +1,11 @@
+{
+  int(n, c, m);
+  int[] positions = new int[m], customers = new int[m];
+  for (i, m) {
+    positions[i] = int();
+    customers[i] = int();
+  }
+  debug(ats(positions));
+  debug(ats(customers));
+  return null;
+}

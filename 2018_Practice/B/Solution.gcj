@@ -1,0 +1,26 @@
+ctuple Party(int n, char c);
+
+{
+  int(N);
+  new(PriorityQueue<Party>,pq)(Collections.reverseOrder());
+  for (i, N) {
+    pq.add(new Party(int(), (char)('A'+i)));
+  }
+
+  new(StringBuffer,out)();
+  while (pq.size() > 2) {
+    Party a = pq.poll();
+    out.append(a.c);
+    out.append(' ');
+    if (--a.n > 0) { pq.add(a); }
+  }
+
+  Party a = pq.poll(), b = pq.poll();
+  while (a.n-- > 0) {
+    out.append(b.c);
+    out.append(a.c);
+    out.append(' ');
+  }
+
+  return out;
+}

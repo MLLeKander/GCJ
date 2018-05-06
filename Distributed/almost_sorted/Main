@@ -1,0 +1,3 @@
+#!/bin/bash
+cd /home/michael/Documents/GCJ/Distributed/almost_sorted
+/usr/bin/java -classpath /home/michael/Documents/GCJ/dcj/dcj/../libraries:/home/michael/Documents/GCJ/Distributed/almost_sorted Wrapper

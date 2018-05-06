@@ -1,0 +1,17 @@
+tuple Horse(int x, int s, int d) {
+  double arrivalTime() {
+    int dist = d-x;
+    return dist/(double)s;
+  }
+}
+
+{
+  int(d,n);
+  anew(Horse, horses, n, new Horse(int(), int(), d));
+  double max = 0;
+  for (Horse h : horses) {
+    MAX(max, h.arrivalTime());
+  }
+
+  return d/max;
+}

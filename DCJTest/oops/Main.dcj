@@ -1,0 +1,25 @@
+#define getNum(i) oops.GetNumber(i)
+long n = oops.GetN();
+
+void slave(long lo, long hi) {
+  long min, max = min = getNum(lo);
+  for (long i = lo+1; i < hi; i++) {
+    long tmp = getNum(i);
+    min = Math.min(min, tmp);
+    max = Math.max(max, tmp);
+  }
+  masterNode.put(min).putln(max);
+}
+void master() {
+  long min = nodes[0].getlnLong(), max = nodes[0].getLong();
+  for (i, 1, nodes.length) {
+    min = Math.min(min, nodes[i].getlnLong());
+    max = Math.max(max, nodes[i].getLong());
+  }
+  println(max-min);
+}
+
+{
+  LINSPACE(n);
+  MASTER();
+}

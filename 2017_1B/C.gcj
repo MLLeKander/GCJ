@@ -1,0 +1,53 @@
+ctuple Horse(long maxDist, double speed);
+ctuple Query(int start, int end);
+ctuple PQNode(double time, int ndx);
+
+class Adj {
+  (long cost, Node target);
+  .String toString() { return String.format("%d(%d)", target.i, cost); }
+}
+class Node {
+  (int i);
+  boolean visited = false;
+  double minTime = Double.MAX_VALUE;
+  double minTime() { return minTime; }
+  .new(ArrayList<Adj>, adj)();
+  .String toString() { return i+":"+adj; }
+}
+
+.new(PriorityQueue<Node>, q)(10000, Comparator.comparing(Node::minTime));
+
+void solve(Node[] nodes, Horse[] horses, int start, int end) {
+  for (Node n : nodes) { n.visited = false; n.minTime = Double.MAX_VALUE; }
+  q.clear();
+
+  q.add(new PQNode(0,start));
+  while (q.size() > 0) {
+    PQNode top = q.poll();
+    Node tmp = nodes[top.ndx];
+    if (tmp.visited) { continue; }
+    tmp.visited = true;
+
+    if (top.i == end) {
+      print(top.minTime
+    }
+  }
+}
+
+{
+  int(n, q);
+  anew(Horse, horses, n, new Horse(long(), double()));
+  anew(Node, nodes, n, new Node(i));
+  for (i, n) {
+    for (j, n) {
+      long(dist);
+      if (dist != -1) {
+        nodes[i].adj.add(new Adj(dist, nodes[j]));
+      }
+    }
+  }
+  debug(ats(nodes));
+  for (i, q) { solve(nodes, int()-1, int()-1); }
+
+  return null;
+}

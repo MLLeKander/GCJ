@@ -1,0 +1,67 @@
+boolean test(int[][] ranges) {
+  BitSet expected();
+  for (int[] row : ranges) {
+    for(i, row[0], row[1]+1) {
+      expected.set(i);
+    }
+  }
+
+  Integer[] ndxes(ranges.length, i);
+  for (it, 100) {
+    IntervalTree tree();
+    for (int ndx : ndxes) {
+      int[] row = ranges[ndx];
+      tree.add(row[0], row[1]);
+    }
+
+    BitSet actual();
+    for (IntervalTree.Range r : tree) {
+      for(i, (int)r.lo, r.hi+1) {
+        actual.set(i);
+      }
+    }
+    if (!actual.equals(expected)) {
+      debug(tree);
+      return false;
+    }
+
+    List<Integer> tmp = Arrays.asList(ndxes);
+    Collections.shuffle(tmp, rand);
+    tmp.toArray(ndxes);
+  }
+  return true;
+}
+
+int[][] case1() {
+  int[][] out(1000,2, 2*i+j);
+  return out;
+}
+
+Random rand(1);
+
+int[][] case2() {
+  int[][] out(100, 2, rand.nextInt(100000));
+  for (int[] row : out) {
+    row[1] += row[0];
+  }
+  return out;
+}
+
+{
+  debug("case1");
+  debug(test(case1()));
+  debug("case2");
+  debug(test(case2()));
+  //new(IntervalTree, t)();
+  //t.add(0, 0);
+  //t.add(0.25, 1);
+  //t.add(2, 3);
+  //debug(t);
+  //t.add(0.5, 3.5);
+  //t.add(5, 6);
+  //debug(t);
+  //IntervalTree t2 = t.expand(1,3);
+  //debug(t2);
+  //t.addAll(t2);
+  //debug(t);
+}

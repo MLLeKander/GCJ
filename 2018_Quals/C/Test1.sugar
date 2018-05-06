@@ -1,0 +1,45 @@
+int t;
+{
+  t = int();
+  while (t-- > 0) {
+    solve();
+  }
+}
+
+boolean allTrue(boolean[] a) {
+  for (boolean b : a) {
+    if (!b) {
+      return false;
+    }
+  }
+  return true;
+}
+
+void solve() {
+  int(a);
+  boolean[][] board = new boolean[67][3];
+
+  println("66 2"); flush(); int(); int();
+
+  int r = 2;
+  int queries = 0;
+  while (true) {
+    printf("%d %d\n", r, 2);
+    flush();
+    queries++;
+    int(r_, c_);
+
+    if (r_ == 0 && c_ == 0) {
+      eprintln(queries);
+      return;
+    } else if (r_ == -1 && c_ == -1) {
+      t = 0;
+      return;
+    }
+
+    board[r_-1][c_-1] = true;
+    while (r < board.length-1 && allTrue(board[r-2])) {
+      r++;
+    }
+  }
+}

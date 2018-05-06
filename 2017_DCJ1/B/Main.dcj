@@ -1,0 +1,62 @@
+long len = weird_editor.GetNumberLength();
+long MOD = 1000000007L;
+#define BI BigInteger
+
+BI TEN = new BI("10");
+BI MOD_BIGINT = new BI(MOD+"");
+long tenModPow(long p) {
+  return TEN.modPow(new BI(p+""),MOD_BIGINT).longValue();
+}
+
+new(HashMap<Long><Long>, memo)();
+long onesMod(long n) {
+  if (n == 0) { return 0; }
+  if (n == 1) { return 1; }
+  if (memo.containsKey(n)) { return memo.get(n); }
+  long tmp = onesMod(n/2), tmp2 = onesMod((n+1)/2);
+  long out = (tmp + (tmp2*tenModPow(n/2))%MOD)%MOD;
+  memo.put(n, out);
+  return out;
+}
+
+void clearBelow(long[] arr, int ndx) {
+  for (i, ndx) {
+    arr[i] = 0;
+  }
+}
+
+slave(long lo, long hi) {
+  int range = (int)(hi-lo);
+  long[] counts = new long[10];
+  for (long i = lo; i < hi; i++) {
+    int digit = (int)weird_editor.GetDigit(i);
+    counts[digit]++;
+    clearBelow(counts, digit);
+  }
+  masterNode.putln(counts);
+}
+
+master() {
+  long[] counts = nodes[0].getlnLongA();
+  for (i, 1, activeNodes) {
+    long[] tmp = nodes[i].getlnLongA();
+    for (int j = 9; j >= 0; j--) {
+      if (tmp[j] > 0) {
+        counts[j] += tmp[j];
+        clearBelow(counts, j);
+      }
+    }
+  }
+  long sum = 0, out = 0;
+  for (i, 10) { sum += counts[i]; }
+  counts[0] += len-sum;
+  for (int i = 9; i >= 0; i--) {
+    out = ((tenModPow(counts[i])*out)%MOD +  onesMod(counts[i])*i)%MOD;
+  }
+  println(out);
+}
+
+{
+  LINSPACE(len);
+  MASTER();
+}

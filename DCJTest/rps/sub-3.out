@@ -1,0 +1,11 @@
+STDOUT:
+
+
+STDERR:
+Main.java:2: error: package java.util.stream does not exist
+import java.util.stream.*;
+^
+Main.java:6: error: package java.util.function does not exist
+import java.util.function.*;
+^
+2 errors

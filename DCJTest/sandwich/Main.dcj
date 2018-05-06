@@ -1,0 +1,56 @@
+#define getTaste(i) sandwich.GetTaste(i)
+
+long minSub(long[] arr) {
+  long min = 0, currMin = 0;
+
+  for (long i : arr) {
+    currMin += i;
+    if (currMin > 0) {
+      currMin = 0;
+    }
+    MIN(min, currMin);
+  }
+  return min;
+}
+
+void slave(long lo, long hi) {
+  long sum = 0, maxL = 0, maxR = 0, maxM = 0, tmp = 0;
+  anew(long, arr, (int)(hi-lo), getTaste(i+lo); sum += arr[i]);
+  for (i, arr.length) {
+    MAX(maxL, tmp += arr[i]);
+  }
+  tmp = 0;
+  for (int i = arr.length-1; i >= 0; i--) {
+    MAX(maxR, tmp += arr[i]);
+  }
+
+  maxM = sum - minSub(arr);
+
+  masterNode.put(sum).put(maxL).put(maxR).putln(maxM);
+}
+
+void master() {
+  long total = 0;
+  anew(long, sums, nodes.length, nodes[i].getlnLong(); total += sums[i]);
+  anew(long, maxL, nodes.length, nodes[i].getLong());
+  anew(long, maxR, nodes.length, nodes[i].getLong());
+  anew(long, maxM, nodes.length, nodes[i].getLong());
+
+  long max = Math.max(0, total);
+  
+  for (i, nodes.length) {
+    MAX(max, total - sums[i] + maxM[i]);
+  }
+  for (int l = 0, lEaten = 0; l < nodes.length; lEaten += sums[l++]) {
+    for (int r = nodes.length-1, rEaten = 0; r > l; rEaten += sums[r--]) {
+      MAX(max, lEaten + maxL[l] + rEaten + maxR[r]);
+    }
+  }
+
+  println(max);
+}
+
+{
+  LINSPACE(sandwich.GetN());
+  MASTER();
+}

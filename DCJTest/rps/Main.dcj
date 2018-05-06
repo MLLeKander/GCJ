@@ -1,0 +1,51 @@
+#define getN() rps.GetN()
+#define getMove(i) rps.GetFavoriteMove(i)
+
+mtuple Player(long id, char c);
+
+Player winner(Player a, Player b) {
+  return a.c == b.c || a.c == 'R' && b.c == 'S' || a.c == 'P' && b.c == 'R' || a.c == 'S' && b.c == 'P' ? a : b;
+}
+
+Player simulate(Player[] board) {
+  for (int i = board.length; i > 1; i /= 2) {
+    for (int j = 0; j < i; j += 2) {
+      board[j/2] = winner(board[j], board[j+1]);
+    }
+  }
+  return board[0];
+}
+
+int n = (int)getN();
+long players = 1L << n;
+
+void slave(long lo, long hi) {
+  anew(Player, ps, (int)(hi-lo), new Player(i+lo, getMove(i+lo)));
+  nodes[0].putln(simulate(ps));
+}
+
+void master() {
+  //char[] cs = new char[]{'R','P','S'};
+  //for (char c1 : cs) {
+  //  for (char c2 : cs) {
+  //    Player p1 = new Player(1, c1), p2 = new Player(2, c2);
+  //    long win = winner(p1, p2).id;
+  //    debug(c1,c2,win);
+  //  }
+  //}
+
+  anew(Player, tmp, activeNodes, Player.getln(nodes[i]));
+  println(simulate(tmp).id);
+}
+
+
+{
+  int depth = 1;
+  for (; depth <= n && 1 << depth <= nodes.length; depth++) ;
+  activeNodes = 1 << depth-1;
+  anew(Node, tmpNodes, activeNodes, nodes[i]);
+  nodes = tmpNodes;
+
+  LINSPACE(players);
+  MASTER();
+}

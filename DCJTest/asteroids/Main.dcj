@@ -1,0 +1,72 @@
+#define getChar(r,c) asteroids.GetPosition(r,c)
+int width = (int)asteroids.GetWidth();
+int height = (int)asteroids.GetHeight();
+
+//slave(int lo, int hi) {
+//  
+//}
+
+#define ctoi(i) (chars[i]-'0')
+
+long[] step(long lo, long hi, long prevLo, long prevHi, long row, long[] prev) {
+  int range = (int)(hi-lo), prevRange = (int)(prevHi-prevLo);
+  long[] out = new long[range];
+  Arrays.fill(out, -1);
+  anew(char, chars, prevRange, getChar(row, i+prevLo));
+  int offset = (int)(lo-prevLo);
+  for (i, prevRange) {
+    if (prev[i] == -1 || chars[i] == '#') { continue; }
+    if (chars[i] == '#' || prev[i] == -1) { continue; }
+    int newNdx = i+offset;
+    if (newNdx >= 0 && newNdx < out.length) {
+      MAX(out[newNdx], prev[i]+ctoi(i));
+    }
+    if (i > 0 && chars[i-1] != '#' && newNdx > 0) {
+      MAX(out[newNdx-1], prev[i]+ctoi(i)+ctoi(i-1));
+    }
+    if (i < chars.length-1 && chars[i+1] != '#' && newNdx < out.length-1) {
+      MAX(out[newNdx+1], prev[i]+ctoi(i)+ctoi(i+1));
+    }
+  }
+  return out;
+}
+
+slave(long lo, long hi) {
+  
+}
+
+master() {
+  long[] score = new long[width], scoreNew = new long[width];
+  for (r, height) {
+    anew(char, chars, width, getChar(r, i));
+    Arrays.fill(scoreNew, -1);
+    // Straight
+    for (i, width) {
+      if (chars[i] == '#' || score[i] == -1) { continue; }
+      MAX(scoreNew[i], score[i]+ctoi(i));
+    }
+    // Move right
+    for (i, width-1) {
+      if (chars[i] == '#' || chars[i+1] == '#' || score[i] == -1) { continue; }
+      MAX(scoreNew[i+1], score[i]+ctoi(i)+ctoi(i+1));
+    }
+    // Move left
+    for (i, 1, width) {
+      if (chars[i] == '#' || chars[i-1] == '#' || score[i] == -1) { continue; }
+      MAX(scoreNew[i-1], score[i]+ctoi(i)+ctoi(i-1));
+    }
+
+
+    long[] tmp = score;
+    score = scoreNew;
+    scoreNew = tmp;
+  }
+  maxndx(long,score);
+  println(max);
+}
+
+{
+  //LINSPACE(height);
+  //SLAVE();
+  MASTER();
+}

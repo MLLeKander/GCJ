@@ -1,0 +1,27 @@
+{
+  int(n);
+  long[] ws(n, long());
+
+  long[][] dp(n, 200);
+  Arrays.fill(dp[0], Long.MAX_VALUE);
+  dp[0][0] = 0;
+  dp[0][1] = ws[0];
+
+  for (a, 1, dp.length) {
+    long currW = ws[a];
+    for (o, dp[0].length) {
+      dp[a][o] = Long.MAX_VALUE;
+      if (o > 0 && currW*6 >= dp[a-1][o-1]) {
+        MIN(dp[a][o], currW+dp[a-1][o-1]);
+      }
+      MIN(dp[a][o], dp[a-1][o]);
+    }
+  }
+
+  for (i, 0, dp[n-1].length) {
+    if (dp[n-1][i] == Long.MAX_VALUE) {
+      return i-1;
+    }
+  }
+  return -1;
+}

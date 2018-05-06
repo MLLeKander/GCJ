@@ -1,0 +1,52 @@
+tuple Recipie(int a, int b);
+
+boolean anyNeg(long[] s) {
+  for (long tmp : s) {
+    if (tmp < 0) {
+      return true;
+    }
+  }
+  return false;
+}
+
+boolean canFit(long l, long sum, long[] start, Recipie[] rs) {
+  long[] curr = Arrays.copyOf(start, start.length);
+  curr[0] -= l;
+  boolean flag = true;
+  while (sum > 0 && flag) {
+    flag = false;
+    for (i, curr.length) {
+      if (curr[i] < 0) {
+        Recipie r = rs[i];
+        if (r.a == i || r.b == i) { return false; }
+        sum += curr[i];
+        curr[r.a] += curr[i];
+        curr[r.b] += curr[i];
+        curr[i] = 0;
+        flag = true;
+      }
+    }
+  }
+  return !anyNeg(curr);
+}
+
+{
+  int(m);
+  Recipie[] rs(m, (int()-1, int()-1));
+  long[] start(m, long());
+  long sum = 0;
+  for (long s : start) {
+    sum += s;
+  }
+  long lo = 0, hi = sum+1;
+  while (lo+1 < hi) {
+    long mid = (lo+hi)/2;
+    boolean c = canFit(mid, sum, start, rs);
+    if (c) {
+      lo = mid;
+    } else {
+      hi = mid;
+    }
+  }
+  return lo;
+}

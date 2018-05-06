@@ -1,0 +1,30 @@
+tuple Cookie(int w, int h) {
+  double p() { return 2*w + 2*h; }
+  double minCut() { return 2*Math.min(w,h); }
+  double maxCut() { return 2*Math.sqrt(w*w+h*h); }
+}
+
+double solve(Cookie[] cs, double target) {
+  double p = cs[0].p(), maxCut = cs[0].maxCut(), minCut = cs[0].minCut();
+  if ((p+maxCut)*cs.length <= target) {
+    return (p+maxCut)*cs.length;
+  }
+  double baseP = p*cs.length, toFill = target - baseP, sum = 0;
+  int nExpand = 0;
+  for (i, cs.length) {
+    sum += minCut;
+    if (sum > toFill) {
+      break;
+    }
+
+    nExpand++;
+  }
+  return Math.min(target, baseP + nExpand * maxCut);
+}
+
+{
+  int(n);
+  double(p);
+  anew(Cookie, cs, n, new Cookie());
+  return String.format("%.15f", solve(cs,p));
+}

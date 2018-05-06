@@ -1,0 +1,63 @@
+ctuple Diff(int diff, char type);
+
+ctuple Activity(int start, int end, char type) {
+  int time() { return (end-start+720)%720; }
+}
+
+{
+  int(ac, aj);
+  int n = ac+aj;
+
+  int cTime = 720, jTime = 720;
+  new(ArrayList<Activity>, acts)(n);
+  for (i, ac) {
+    acts.add(new Activity(int(), int(), 'c'));
+    cTime -= acts.get(i).time();
+  }
+  for (i, ac, n) {
+    acts.add(new Activity(int(), int(), 'j'));
+    jTime -= acts.get(i).time();
+  }
+  if (ac <= 1 && aj <= 1) { return 2; }
+
+  Collections.sort(acts);
+  int minStart = acts.get(0).start;
+
+  for (Activity a : acts) {
+    a.start -= minStart;
+    a.end -= minStart;
+    if (a.end < 0) {
+      a.end += 1440;
+    }
+  }
+  debug(acts);
+
+  new(ArrayList<Diff>,diffs)();
+  for (i, n) {
+    Activity a = acts.get(i), b = acts.get(i+1 == n ? 0 : i+1);
+    if (a.type == b.type) {
+      int diff = b.start - a.end;
+      if (i+1 == n) {
+        diff = 1440 - a.end + b.start;
+        //if (diff < 0) { diff += 1440; }
+      }
+      debug(a, b, diff);
+      diffs.add(new Diff(diff, a.type));
+    }
+  }
+  Collections.sort(diffs);
+
+  for (Diff d : diffs) {
+    char type = d.type;
+    int diff = d.diff;
+    if (type == 'c' && diff <= jTime) {
+      jTime -= diff;
+      ac--;
+    } else if (type == 'j' && diff <= cTime) {
+      cTime -= diff;
+      aj--;
+    }
+  }
+  debug(diffs, ac, aj, cTime, jTime);
+  return Math.max(ac,aj)*2;
+}

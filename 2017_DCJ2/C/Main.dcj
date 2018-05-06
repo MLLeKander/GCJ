@@ -1,0 +1,47 @@
+#define val(x) broken_memory.GetValue(x)
+
+int len = (int)broken_memory.GetLength();
+long CHUNK_LEN = 1000;
+
+int M(int n) {
+  return (n+nodes.length)%nodes.length;
+}
+
+long sumBetween(long lo, long hi, long[] vals) {
+  int out = 0;
+  for (i, lo, hi) {
+    out += vals[i];
+  }
+  return out;
+}
+
+slave() {
+  anew(long, vals, len, val(i));
+  int to1 = M(nodeId+1), to2 = M(nodeId+2);
+  int from1 = M(nodeId-1), from2 = M(nodeId-2);
+  int partner = nodeId%2 == 0 ? nodeId+1 : nodeId-1;
+  nodes[to1].putln(vals);
+  nodes[to2].putln(vals);
+  long[] c1 = nodes[from1].getlnLongA();
+  long[] c2 = nodes[from2].getlnLongA();
+  int ndx = -1;
+  for (i, len) {
+    if (vals[i] != c1[i] && vals[i] != c2[i]) {
+      if (ndx != -1) { throw new RuntimeException(); }
+      ndx = i;
+    }
+  }
+  masterNode.putln(ndx);
+}
+
+master() {
+  for (i, nodes.length) {
+    print((i==0?"":" ")+nodes[i].getlnInt());
+  }
+  println();
+}
+
+{
+  SLAVE();
+  MASTER();
+}

@@ -1,0 +1,168 @@
+import java.awt.geom.*;
+#define PT2 Point2D.Double
+#define PT3 Point3D
+final double TH2_MAX = 0.6154797;
+
+class PT3 {
+  (double x, double y, double z);
+  .String toString() { return String.format("%.15f %.15f %.15f", x, y, z); }
+  .void tformXY(AffineTransform t) {
+    PT2 p = new PT2(x,y);
+    t.transform(p,p);
+    x=p.x;
+    y=p.y;
+  }
+  .void tformXZ(AffineTransform t) {
+    PT2 p = new PT2(x,z);
+    t.transform(p,p);
+    x=p.x;
+    z=p.y;
+  }
+  .void tformYZ(AffineTransform t) {
+    PT2 p = new PT2(y,z);
+    t.transform(p,p);
+    y=p.x;
+    z=p.y;
+  }
+  .PT3 copy() { return new PT3(x,y,z); }
+  .PT3 inv() { return new PT3(-x,-y,-z); }
+  .double len() { return Math.sqrt(x*x + y*y + z*z); }
+}
+
+List<PT2> convexHull(PT2[] points) {
+  new(ArrayList<PT2>, out)();
+  PT2 p0 = Collections.min(Arrays.asList(points), Comparator.comparing(PT2::getX).thenComparing(PT2::getY));
+  while (out.size() <= 1 || out.get(0) != p0) {
+    out.add(p0);
+    PT2 p1 = points[0];
+    for (i, 1, points.length) {
+      if (p0.equals(p1) || isRight(p0, p1, points[i])) {
+        p1 = points[i];
+      }
+    }
+    p0 = p1;
+  }
+  return out;
+}
+boolean isRight(PT2 a, PT2 b, PT2 c){
+  return ((b.x - a.x)*(c.y - a.y) - (b.y - a.y)*(c.x - a.x)) < 0;
+}
+
+double area(List<PT2> points) {
+  double out = 0;
+  for (i, points.size()) {
+    PT2 a = points.get(i), b = points.get((i+1)%points.size());
+    out += a.x*b.y - a.y*b.x;
+  }
+  return out/2;
+}
+
+double shadowArea(PT3[] corners) {
+  anew(PT2, proj, corners.length, new PT2(corners[i].x, corners[i].z));
+  return area(convexHull(proj));
+}
+
+double areaAfterRotation(PT3[] corners_, double th) {
+  anew(PT3, corners, corners_.length, corners_[i].copy());
+  AffineTransform tform = AffineTransform.getRotateInstance(th);
+  for (PT3 p : corners) { p.tformYZ(tform); }
+  return shadowArea(corners);
+  //anew(PT2, poly, corners.length, new PT2(corners[i].x, corners[i].z));
+  //return area(convexHull(poly));
+}
+
+double th2(AffineTransform tform1, double d) {
+  PT3[] corners = new PT3[] {
+    new PT3( 0.5,  0.5,  0.5),
+    new PT3(-0.5,  0.5,  0.5),
+    new PT3( 0.5, -0.5,  0.5),
+    new PT3(-0.5, -0.5,  0.5),
+    new PT3( 0.5,  0.5, -0.5),
+    new PT3(-0.5,  0.5, -0.5),
+    new PT3( 0.5, -0.5, -0.5),
+    new PT3(-0.5, -0.5, -0.5)
+  };
+  for (PT3 p : corners) { p.tformXY(tform1); }
+  double lo = 0, hi = TH2_MAX;
+  for (i, 100) {
+    double mid = (lo+hi)/2;
+    if (areaAfterRotation(corners, mid) > d) {
+      hi = mid;
+    } else {
+      lo = mid;
+    }
+  }
+  return (hi+lo)/2;
+}
+
+double angleBetween(PT3 a, PT3 b) {
+  PT3 v1 = a.inv(), v2 = b;
+  double dot = v1.x*v2.x+v1.y*v2.y+v1.z*v2.z;
+  return Math.acos(dot/(v1.len()*v2.len()));
+}
+
+void check(double a, double b, String msg) {
+  if (Math.abs(a-b) > 1e-6) {
+    throw new RuntimeException(String.format("%s: exected %f, got %f",msg,b,a));
+  }
+}
+
+PT3 intersect(PT3 a, PT3 b, PT3 c) {
+  return new PT3(a.x+b.x+c.x, a.y+b.y+c.y, a.z+b.z+c.z);
+}
+
+<F> F pty(int i, int ndx, F[] a, F[] b) {
+  return ((((1<<ndx)&i) == 0) ? a : b)[ndx];
+}
+
+PT3[] cornersFromFaces(PT3[] f1) {
+  anew(PT3, f2, f1.length, f1[i].inv());
+  anew(PT3, corners, 8, intersect(pty(i,0,f1,f2),pty(i,1,f1,f2),pty(i,2,f1,f2)));
+  return corners;
+}
+
+void check(PT3[] faces, double d) {
+  for (PT3 p : faces) {
+    check(p.len(), 0.5, "dist");
+  }
+  for (i, faces.length) {
+    for (j, i+1, faces.length) {
+      check(angleBetween(faces[i], faces[j]), Math.PI/2, "angle");
+    }
+  }
+  PT3[] corners = cornersFromFaces(faces);
+  check(shadowArea(corners), d, "area");
+}
+
+{
+  double(d);
+  double th;
+  boolean flag;
+  if (d <= Math.sqrt(2)) {
+    th = Math.asin(d/Math.sqrt(2)) + Math.PI/4;
+    flag = false;
+  } else {
+    th = 3*Math.PI/4;
+    flag = true;
+  }
+  AffineTransform tform = AffineTransform.getRotateInstance(th);
+  PT3[] centers = new PT3[] {new PT3(0.5, 0, 0), new PT3(0, 0.5, 0), new PT3(0, 0, 0.5)};
+
+  for (PT3 p : centers) {
+    p.tformXY(tform);
+  }
+  if (flag) {
+    AffineTransform tform2 = AffineTransform.getRotateInstance(th2(tform,d));
+    for (PT3 p : centers) {
+      p.tformYZ(tform2);
+    }
+  }
+
+  println();
+  for (PT3 p : centers) {
+    println(p);
+  }
+  flush();
+  check(centers, d);
+  return null;
+}

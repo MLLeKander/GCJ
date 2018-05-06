@@ -1,0 +1,68 @@
+final int ROWS = 76, COLS = 3;
+
+int t = 0, queries = 0;
+{
+  t = int();
+  while (t-- > 0) {
+    queries = 0;
+    solve();
+    eprintln(queries);
+  }
+}
+
+void fillCounts(int[][] counts, int r, int c) {
+  for (int dr = -1; dr <= 1; dr++) {
+    int r_ = r+dr;
+    if (r_ < 1 || r_ >= ROWS-1) {
+      continue;
+    }
+    
+    for (int dc = -1; dc <= 1; dc++) {
+      int c_ = c+dc;
+      if (c_ < 1 || c_ >= COLS-1) {
+        continue;
+      }
+      counts[r_][c_]++;
+    }
+  }
+}
+
+void query(int r, int c) {
+  queries++;
+  printf("%d %d\n", r, c);
+  flush();
+}
+
+void solve() {
+  int(a);
+  boolean[][] board = new boolean[ROWS][COLS];
+  int[][] counts = new int[ROWS][COLS];
+
+  int queries = 0;
+  while (true) {
+    int min = Integer.MAX_VALUE, minR = -1, minC = -1;
+    for (int r = 1; r < ROWS-1; r++) {
+      for (int c = 1; c < COLS-1; c++) {
+        if (counts[r][c] < min) {
+          min = counts[r][c];
+          minR = r;
+          minC = c;
+        }
+      }
+    }
+    query(minR+1, minC+1);
+    int(r_, c_);
+
+    if (r_ == 0 && c_ == 0) {
+      return;
+    } else if (r_ == -1 && c_ == -1) {
+      t = 0;
+      return;
+    }
+
+    if (!board[r_-1][c_-1]) {
+      board[r_-1][c_-1] = true;
+      fillCounts(counts, r_-1, c_-1);
+    }
+  }
+}

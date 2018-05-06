@@ -1,0 +1,24 @@
+{
+  int(n,k);
+  double(u);
+  anew(double, probs, n+1, i==n ? 1 : double());
+
+  Arrays.sort(probs);
+  for (i, n+1) {
+    double diff = probs[i] - probs[0];
+    if (diff * i > u+0.00001) {
+      for (j, i) {
+        probs[j] += u/i;
+      }
+      break;
+    }
+    u -= diff * i;
+    for (j, i) {
+      probs[j] = probs[i];
+    }
+  }
+  
+  double out = 1;
+  for (double d : probs) { out *= d; }
+  return out;
+}

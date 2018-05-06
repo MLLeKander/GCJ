@@ -1,0 +1,9 @@
+{
+  double(d, n);
+  double maxTime = -1;
+  for (i, n) {
+    double(k, s);
+    maxTime = Math.max(maxTime, (d-k)/s);
+  }
+  return d/maxTime;
+}

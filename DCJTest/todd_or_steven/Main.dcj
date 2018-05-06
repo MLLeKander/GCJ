@@ -1,0 +1,82 @@
+long oLen = todd_and_steven.GetToddLength();
+long eLen = todd_and_steven.GetStevenLength();
+long PRIME = 1000000007l;
+#define getO(i) todd_and_steven.GetToddValue(i)
+#define getE(i) todd_and_steven.GetStevenValue(i)
+
+
+long oBiSearch(long target) {
+  long lo = 0, hi = oLen-1;
+  while (lo < hi) {
+    long mid = (lo+hi)/2;
+    if (getO(mid) >= target) {
+      hi = mid;
+    } else {
+      lo = mid+1;
+    }
+  }
+  return getO(lo) >= target ? lo : oLen;
+}
+long eBiSearch(long target) {
+  long lo = 0, hi = eLen-1;
+  while (lo < hi) {
+    long mid = (lo+hi)/2;
+    if (getE(mid) >= target) {
+      hi = mid;
+    } else {
+      lo = mid+1;
+    }
+  }
+  return getE(lo) >= target ? lo : eLen;
+}
+
+
+#define UPDATE(i) out = (out + (i ^ ndx))%PRIME
+slave(long lo, long hi) {
+  long oNdx = oBiSearch(lo), eNdx = eBiSearch(lo);
+  long o = oNdx == oLen ? Long.MAX_VALUE : getO(oNdx), e = eNdx == eLen ? Long.MAX_VALUE : getE(eNdx);
+  long ndx = oNdx + eNdx, out = 0;
+
+  for (; Math.min(o, e) < hi; ndx++) {
+    if (o < e) {
+      UPDATE(o);
+      o = (++oNdx >= oLen) ? Long.MAX_VALUE : getO(oNdx);
+    } else {
+      UPDATE(e);
+      e = (++eNdx >= eLen) ? Long.MAX_VALUE : getE(eNdx);
+    }
+  }
+
+  masterNode.putln(out);
+}
+
+{
+  int n = (nodes.length)/2;
+  long[] oRanges = linspace(oLen, n), eRanges = linspace(eLen, n);
+  //if (nodeId == 0) { debug(ats(oRanges),ats(eRanges)); }
+  long[] ranges = new long[oRanges.length + eRanges.length - 1];
+  for (i, oRanges.length-1) {
+    ranges[i] = getO(oRanges[i]);
+  }
+  for (i, eRanges.length-1) {
+    ranges[i+oRanges.length-1] = getE(eRanges[i]);
+  }
+  ranges[ranges.length-1] = Integer.MAX_VALUE;
+  Arrays.sort(ranges);
+  //if (nodeId == 0) { debug(ats(ranges)); }
+  {
+    activeNodes = ranges.length-1;
+    if (activeNodes > nodes.length) { eprintln("ERR"); }
+    if (nodeId+1 < ranges.length) {
+      slave(ranges[nodeId], ranges[nodeId+1]);
+    }
+  }
+  if (nodeId == 0) {
+    long out = 0;
+    for (i, activeNodes) {
+      out = (out + nodes[i].getlnLong())%PRIME;
+    }
+    //out = (out + (ranges[ranges.length-1]^(ranges.length-1)) )%PRIME;
+    println(out);
+  }
+}

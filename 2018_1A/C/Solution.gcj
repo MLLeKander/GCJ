@@ -1,0 +1,39 @@
+tuple Cookie(int w, int h) {
+  double p() { return 2*w + 2*h; }
+  double minCut() { return 2*Math.min(w,h); }
+  double maxCut() { return 2*Math.sqrt(w*w+h*h); }
+}
+
+double solve(Cookie[] cs, double target) {
+  new(IntervalTree,t)();
+  t.add(0,0);
+
+  double baseP = 0;
+  for (Cookie c : cs) {
+    baseP += c.p();
+  }
+  double slack = target - baseP;
+
+  for (Cookie c : cs) {
+    IntervalTree tmpT = t.expand(c.minCut(), c.maxCut());
+    t.addAll(tmpT);
+    t.cull(slack);
+  }
+
+  IntervalTree.Range prevRange = null;
+  for (IntervalTree.Range currRange : t) {
+    if (prevRange != null && prevRange.hi >= currRange.lo) {
+      throw new RuntimeException();
+    }
+    prevRange = currRange;
+  }
+
+  return Math.min(baseP + t.last().hi, target);
+}
+
+{
+  int(n);
+  double(p);
+  anew(Cookie, cs, n, new Cookie());
+  return String.format("%.15f", solve(cs,p));
+}

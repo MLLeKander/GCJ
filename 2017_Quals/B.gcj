@@ -1,0 +1,25 @@
+{
+  char[] s = line().toCharArray();
+  int ndx = -1;
+
+  for (i, 0, s.length-1 && ndx == -1) {
+    if (s[i+1] < s[i]) {
+      ndx = i;
+    }
+  }
+
+  if (ndx != -1) {
+    char tmp = s[ndx];
+    while (ndx > 0 && s[ndx-1] == tmp) {
+      ndx--;
+    }
+
+    s[ndx]--;
+    for (i, ndx+1, s.length) {
+      s[i] = '9';
+    }
+  }
+
+  String out = new String(s);
+  return out.charAt(0) == '0' ? out.substring(1) : out;
+}

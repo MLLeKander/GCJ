@@ -1,0 +1,22 @@
+long[] b = new long[]{3,5,7,9,11,13};
+long getB(long i) { return b[(int)i]; }
+long biSearchB(long target) {
+  long lo = 0, hi = b.length-1;
+  while (lo < hi) {
+    long mid = (lo+hi)/2;
+    if (getB(mid) >= target) {
+      hi = mid;
+    } else {
+      lo = mid+1;
+    }
+  }
+  return getB(lo) >= target ? lo : -1;
+}
+
+{
+  for (i, 15) {
+    long q = i, ndx = biSearchB(q), b = ndx == -1 ? -1 : getB(ndx);
+    debug(q,ndx,b);
+  }
+}
+

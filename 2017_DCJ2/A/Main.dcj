@@ -1,0 +1,99 @@
+mtuple Res(int range, long lHeight, long lSlope, long lLen, long rHeight, long rSlope, long rLen, long maxLen);
+
+#define height(x) flagpoles.GetHeight(x)
+
+long poles = flagpoles.GetNumFlagpoles();
+
+slave(long lo, long hi) {
+  int range = (int)(hi-lo);
+  anew(long,data,range, height(lo+i));
+  if (range == 1) {
+    throw new RuntimeException();
+  }
+  //if (range == 1) {
+  //  masterNode.putln(new Res(data[0], Long.MIN_VALUE, 1, 
+  //  return;
+  //}
+  long lHeight = data[0], lSlope = data[1] - data[0], lLen = 2;
+  for (i, 2, range) {
+    if (data[i] == data[i-1] + lSlope) {
+      lLen++;
+    } else {
+      break;
+    }
+  }
+  long rHeight = data[range-1], rSlope = data[range-1] - data[range-2], rLen = 2;
+  for (int i = range-2; i > 0; i--) {
+    if (data[i] == data[i-1] + rSlope) {
+      rLen++;
+    } else {
+      break;
+    }
+  }
+  long height = data[0], slope = data[1]-data[0], len = 1, maxLen = -1;
+  for (i, 1, range) {
+    if (data[i] == data[i-1]+slope) {
+      len++;
+    } else {
+      maxLen = Math.max(maxLen, len);
+      height = data[i];
+      slope = data[i]-data[i-1];
+      len = 2;
+    }
+  }
+  maxLen = Math.max(maxLen, len);
+  //debug(ats(data));
+  //debug(lo, hi, lHeight, lSlope, lLen, rHeight, rSlope, rLen);
+  masterNode.putln(new Res(range, lHeight, lSlope, lLen, rHeight, rSlope, rLen, maxLen));
+}
+
+master() {
+  anew(Res, ress, activeNodes, Res.getln(nodes[i]));
+  long maxLen = -1;
+  for (Res r : ress) {
+    MAX(maxLen, r.maxLen);
+  }
+  long rollLen = ress[0].rLen;
+  for (i, 1, activeNodes) {
+    Res res = ress[i], prevRes = ress[i-1];
+
+    long lLen = res.lLen, rLen = res.rLen, range = res.range;
+    long height = res.lHeight, slope = res.lSlope;
+    long prevHeight = prevRes.rHeight, prevSlope = prevRes.rSlope;
+    //debug(lLen, height, slope, prevHeight, prevSlope, rollLen);
+    if (prevHeight + prevSlope == height && prevSlope == slope) {
+      rollLen += lLen;
+      MAX(maxLen, rollLen);
+      if (range != lLen) {
+        rollLen = rLen;
+      }
+    } else {
+      if (prevHeight + prevSlope == height) {
+        rollLen++;
+      }
+      MAX(maxLen, rollLen);
+      rollLen = rLen;
+    }
+  }
+  MAX(maxLen, rollLen);
+  println(maxLen);
+}
+
+{
+  if (poles == 1) {
+    if (nodeId == 0) {
+      println(1);
+    }
+  } else if (nodes.length*2 >= poles) {
+    if (nodeId == 0) {
+
+      slave(0, poles);
+      Res tmp = Res.getln(nodes[0]); 
+      println(tmp.maxLen);
+      //debug(tmp.lLen, tmp.rLen);
+    }
+  } else {
+    LINSPACE(poles);
+    MASTER();
+  }
+}

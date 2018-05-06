@@ -1,0 +1,72 @@
+#define POS "POSSIBLE"
+#define IMP "IMPOSSIBLE"
+
+int[] slice(int[] counts, int N, int slices) {
+  int[] out = new int[slices+2];
+  int sum = 0, expected = N/(slices+1);
+
+  int oNdx = 1;
+  for (int cNdx = 0; cNdx < counts.length && oNdx < out.length; cNdx++) {
+    sum += counts[cNdx];
+    if (counts[cNdx] != 0 && sum%expected == 0) {
+      out[oNdx++] = cNdx+1;
+    }
+  }
+  return oNdx == out.length ? out : null;
+}
+
+int countSlice(boolean[][] board, int rMin, int rMax, int cMin, int cMax) {
+  int out = 0;
+  for (r, rMin, rMax) {
+    for (c, cMin, cMax) {
+      if (board[r][c]) {
+        out++;
+      }
+    }
+  }
+  //debug(rMin, rMax, cMin, cMax, out);
+  return out;
+}
+
+{
+  int(r,c,h,v);
+  int slices = (h+1)*(v+1);
+  boolean[][] board = new boolean[r][c];
+  int[] rCounts = new int[r], cCounts = new int[c];
+  int N = 0;
+  for (r_, r) {
+    char[] l = line().toCharArray();
+    for (c_, c) {
+      if (board[r_][c_] = (l[c_] == '@')) {
+        rCounts[r_]++;
+        cCounts[c_]++;
+        N++;
+      }
+    }
+  }
+  //debug(N, slices);
+  if (N % slices != 0) {
+    //debug("A");
+    return IMP;
+  } else if (N == 0) {
+    //debug("B");
+    return POS;
+  }
+  int expected = N / slices;
+  int[] rSlices = slice(rCounts, N, h);
+  int[] cSlices = slice(cCounts, N, v);
+  if (rSlices == null || cSlices == null) {
+    return IMP;
+  }
+  //debug(ats(rSlices));
+  //debug(ats(cSlices));
+
+  for (r_, h) {
+    for (c_, v) {
+      if (countSlice(board, rSlices[r_], rSlices[r_+1], cSlices[c_], cSlices[c_+1]) != expected) {
+        return IMP;
+      }
+    }
+  }
+  return POS;
+}

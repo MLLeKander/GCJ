@@ -1,0 +1,30 @@
+int val(int[] arr, int a, int b, int n) {
+  int out = Math.min(arr[a],arr[b]);
+  arr[a] -= out;
+  arr[b] -= out;
+  out += arr[a]/n + arr[b]/n;
+  arr[a] %= n;
+  arr[b] %= n;
+  return out;
+}
+
+{
+  int(n,p);
+  int[] hist = new int[p];
+  for (i, n) {
+    hist[int()%p]++;
+  }
+  int out = hist[0];
+  if (p == 2) {
+    return out + (hist[1]+1)/2;
+  } else if (p == 3) {
+    out += val(hist, 1, 2, 3);
+    return out + ((hist[1] > 0 || hist[2] > 0) ? 1 : 0);
+  } else if (p == 4) {
+    out += hist[2]/2 + val(hist, 1, 3, 4);
+    hist[2] %= 2;
+    return out + ((hist[1] > 0 || hist[2] > 0 || hist[3] > 0) ? 1 : 0);
+  } else {
+    throw new RuntimeException();
+  }
+}

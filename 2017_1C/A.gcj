@@ -1,0 +1,47 @@
+ctuple Pancake(int r, int h) {
+  double hArea() { return 2 * Math.PI * r * h; }
+  double tArea() { return Math.PI * r * r; }
+}
+
+double maxWithBase(int base, Pancake[] pancakes, int k) {
+  double out = pancakes[base].tArea() + pancakes[base].hArea();
+  //new(PriorityQueue<Double>, stack)(k);
+  //for (i, 1, k) {
+  //  stack.add(pancakes[base+i].hArea());
+  //}
+  //for (i, k, pancakes.length) {
+  //  stack.add(pancakes[i].hArea());
+  //  stack.poll();
+  //}
+  //debug(stack);
+  //for (Double p : stack) {
+  //  out += p;
+  //}
+  new(PriorityQueue<Pancake>, stack)(k, Comparator.comparing(Pancake::hArea));
+  for (i, 1, k) {
+    stack.add(pancakes[base+i]);
+  }
+  for (i, base+k, pancakes.length) {
+    stack.add(pancakes[i]);
+    stack.poll();
+  }
+  for (Pancake p : stack) {
+    out += p.hArea();
+  }
+  return out;
+}
+
+{
+  int(n, k);
+  anew(Pancake, pancakes, n, new Pancake(int(), int()));
+  Arrays.sort(pancakes, Collections.reverseOrder());
+  double max = Double.MIN_VALUE;
+  for (i, n-k+1) {
+    double tmp = maxWithBase(i, pancakes, k);
+    if (tmp > max) {
+      max = tmp;
+      //debug(i, ats(pancakes));
+    }
+  }
+  return max;
+}

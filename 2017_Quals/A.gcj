@@ -1,0 +1,23 @@
+{
+  char[] arr = next().toCharArray();
+  int(width);
+  int count = 0;
+  for (i, arr.length-width+1) {
+    if (arr[i] == '-') {
+      flip(i, width, arr);
+      count++;
+    }
+  }
+  for (i, arr.length-width, arr.length) {
+    if (arr[i] == '-') {
+      return "IMPOSSIBLE";
+    }
+  }
+  return count;
+}
+
+void flip(int start, int width, char[] arr) {
+  for (i, width) {
+    arr[start+i] = arr[start+i] == '-' ? '+' : '-';
+  }
+}

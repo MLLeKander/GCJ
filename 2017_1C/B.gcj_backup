@@ -1,0 +1,52 @@
+ctuple Activity(int start, int end, char type) {
+  int time() { return (end-start+720)%720; }
+}
+
+{
+  int(ac, aj);
+  int n = ac+aj;
+
+  int cTime = 720, jTime = 720;
+  new(ArrayList<Activity>, acts)(n);
+  for (i, ac) {
+    acts.add(new Activity(int(), int(), 'c'));
+    cTime -= acts.get(i).time();
+  }
+  for (i, ac, n) {
+    acts.add(new Activity(int(), int(), 'j'));
+    jTime -= acts.get(i).time();
+  }
+  if (ac <= 1 && aj <= 1) { return 2; }
+
+  Collections.sort(acts);
+  int minStart = acts.get(0).start;
+
+  for (Activity a : acts) {
+    a.start -= minStart;
+    a.end -= minStart;
+    if (a.end < 0) {
+      a.end += 1440;
+    }
+  }
+  for (i, n) {
+    Activity a = acts.get(i), b = acts.get(i+1 == n ? 0 : i+1);
+    if (a.type == b.type) {
+      double diff = b.end - a.start;
+      if (diff < 0) { diff += 1440; }
+      if (a.type == 'c' && diff <= jTime) {
+        jTime -= diff;
+        ac--;
+      } else if (a.type == 'j' && diff <= cTime) {
+        cTime -= diff;
+        aj--;
+      } else {
+        continue;
+      }
+      acts.remove(a);
+      acts.remove(b);
+      acts.add(i+1 == n ? 0 : i, new Activity(a.start, b.end, a.type));
+      n--;
+    }
+  }
+  return Math.max(ac,aj)*2;
+}

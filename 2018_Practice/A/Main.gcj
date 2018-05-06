@@ -1,0 +1,22 @@
+{
+  long(a,b);
+  a++;
+  b++;
+  while (a <= b) {
+    long mid = (a+b)/2;
+    println(mid);
+    flush();
+    str(resp);
+    eprintln(resp);
+    if (resp.equals("CORRECT")) {
+      return null;
+    } else if (resp.equals("TOO_SMALL")) {
+      a = mid+1;
+    } else if (resp.equals("TOO_BIG")) {
+      b = mid;
+    } else {
+      throw new RuntimeException();
+    }
+  }
+  throw new RuntimeException();
+}

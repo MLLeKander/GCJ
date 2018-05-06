@@ -1,0 +1,9 @@
+
+{
+  new(ArrayList<Integer>, a)();
+  for (i, 10) {
+    a.add(i);
+  }
+  Collections.shuffle(a.subList(5,10));
+  debug(a);
+}
